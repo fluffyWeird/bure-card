@@ -6,8 +6,8 @@
 - **Andualem Getachew**
 - **Eureka T/Mariam**
 
-#### NB- GELILA AMSALU ISN'T A COLLABORATOR. [didn't signout of vscode that's how it happend]
-#### Assumption - MOH is a credential partner and our project is to be implemented from singIn Phase. This is done because it takes more time to register and is redendant.
+#### NB- GELILA AMSALU ISN'T A COLLABORATOR ALTHOUGH SHE IS PRESENT ON THE COLABORATOR SECTION. [didn't signout of vscode that's how it happend]
+
 ---
 
 ## 📘 Project Synopsis
@@ -58,6 +58,85 @@ npm run dev
 ```
 http://localhost:3000
 ```
+
+---
+
+# 🏥 Bure-Card Docker Setup
+
+This project uses Docker and Docker Compose to run both the frontend (Vite + React) and backend (Node.js + Express) services.
+
+---
+
+## 📁 Project Structure
+
+```
+/
+├── backend/
+│   ├── Dockerfile
+│   └── (Node.js Express app)
+├── frontend/
+│   ├── Dockerfile
+│   └── (Vite React app)
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Install Docker & Docker Compose
+
+- [Install Docker](https://docs.docker.com/get-docker/)
+- Docker Compose comes with Docker Desktop
+
+---
+
+## 📦 Build & Run
+
+### Run both services:
+
+```bash
+docker-compose up --build
+```
+
+### Run in background (detached mode):
+
+```bash
+docker-compose up --build -d
+```
+
+---
+
+## 🌐 Access the App
+
+- Frontend: [http://localhost](http://localhost)
+- Backend API: [http://localhost:8000](http://localhost:8000)
+
+---
+
+## 📄 docker-compose.yml
+
+```yaml
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+```
+
+---
 
 ---
 
