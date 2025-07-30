@@ -2,7 +2,9 @@ import { Request, Response } from 'express';
 import { hashPassword, validatePassword } from '../utils/hash';
 import { Staffs } from '../models/staff.model';
 import { signToken, verifyToken } from '../utils/genToken';
+import { cookieOptions } from '../utils/CookieOptions';
 
+// REGISTER
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const existingUser = await Staffs.findOne({ email: req.body.email });
@@ -19,11 +21,12 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const token = signToken(newUser.email, newUser.username);
 
+    res.cookie("accessToken", token, cookieOptions);
+
     return res.status(201).json({
       message: "User registered successfully",
       username: newUser.username,
       email: newUser.email,
-      token, 
     });
   } catch (error) {
     console.error(error);
@@ -31,6 +34,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+// LOGIN
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const user = await Staffs.findOne({ email: req.body.email });
@@ -45,9 +49,11 @@ export const loginUser = async (req: Request, res: Response) => {
 
     const token = signToken(user.email, user.username);
 
+    res.cookie("accessToken", token, cookieOptions);
+
     return res.status(200).json({
       message: "Login successful",
-      token, 
+      role: user.role,
     });
   } catch (error) {
     console.error(error);
@@ -55,28 +61,29 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-export const logoutUser = async (req: Request, res: Response) => {
+// LOGOUT
+export const logoutUser = (req: Request, res: Response) => {
   try {
-    return res.status(200).json({ message: "Logout successful. Remove token on client side." });
+    res.clearCookie("accessToken", cookieOptions);
+    return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ Error: (error as Error).message });
   }
 };
 
-export const authenticateToken = (req: Request, res: Response, next: Function) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
+// GET USER INFO
+// GET /api/auth/me
+export const getUserInfo = (req: Request, res: Response) => {
+   const token = req.cookies.accessToken;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthenticated" });
   }
 
-  const token = authHeader.split(" ")[1]; 
   try {
-    const decoded = verifyToken(token);
-    (req as any).user = decoded; 
-    next();
+    const user = verifyToken(token);
+    res.json({ user });
   } catch (err) {
-    return res.status(403).json({ message: "Invalid or expired token" });
+    res.status(401).json({ message: "Invalid token" });
   }
 };

@@ -7,7 +7,12 @@ import doctorRoute from './routes/doctor.routes'
 import authRoute from './routes/auth.routes'
 
 const app = express();
-app.use(cors());
+app.use(cors(
+    {
+        origin: 'http://localhost:3000', // Adjust this to your frontend URL
+        credentials: true, // Allow cookies to be sent with requests
+    }
+));
 app.use(bodyParser.json());
 app.use(cookieParser());
 

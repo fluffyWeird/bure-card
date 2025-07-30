@@ -7,6 +7,7 @@ import { getOIDCConfig } from "../utils/oidc";
 import { Users } from "../models/user.model";
 
 import { generateSignedJwt } from "../utils/jwtGenerator";
+import { cookieOptions } from "../utils/CookieOptions";
 
 
 export const exchangeCodeForToken = async (req: Request, res: Response) => {
@@ -52,36 +53,44 @@ console.log("Using OIDC Config:", { USERINFO_ENDPOINT });
     });
 
     const userJwt = response.data;
-    const decodedUser = decodeJwt(userJwt);
 
-    const faydaId = response.data
+    const decodedUser = decodeJwt(userJwt);
+        console.log("Decoded user info:", decodedUser);
+
+    const faydaId = decodedUser.phone_number ;
 
     let user = await Users.findOne({faydaId})
 
     if (!user){
       user = new Users({
+        sub: decodedUser.sub,
         faydaId,
-        fullName: decodedUser.name,
+        name: decodedUser.name,
         email: decodedUser.email || null,
         phone: decodedUser.phone_number || null,
+        role:  "patient",
       })
       await user.save()
     }
 
-    const jwtToken = jwt.sign(
+    const token = jwt.sign(
       {
         id: user._id,
         faydaId: user.faydaId,
-        name: user.name,
-        role: user.role || "patient",
+       
+        userName: decodedUser.name,
+
+        userRole: "patient",
       },
-      process.env.JWT_SECRET as string,
+      process.env.access_Token as string,
       { expiresIn: "1h" }
     );
 
+    res.cookie("accessToken", token, cookieOptions);
+
       return res.json({
         message: user ? "User logged in successfully" : "User registered successfully",
-        token: jwtToken,
+       
         user,
     });
 
@@ -91,3 +100,4 @@ console.log("Using OIDC Config:", { USERINFO_ENDPOINT });
     res.status(500).json({ message: "Failed to fetch user info" });
   }
 };
+

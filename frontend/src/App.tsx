@@ -1,39 +1,51 @@
-import { Route, Routes } from "react-router";
-import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
+import { Route, Routes, useNavigate } from "react-router";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
-import { useState } from "react";
+
 import Callback from "./Pages/callback";
+import DocLogin from "./Pages/DocLogin";
+import DocSignup from "./Pages/DocSignup";
+import { useAuth } from "../src/lib/AuthContext";
+import axios from "axios";
+
+
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentRole, setCurrentRole] = useState<string>("patient");
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = (role: string) => {
-    setCurrentRole(role);
-    setIsAuthenticated(true);
+  console.log("Current user:", user);
+
+  const handleLogout = async() => {
+     const response = await axios.get("http://localhost:5000/api/staff/logout", {
+  withCredentials: true,
+});
+    if (response.status === 200) {
+ 
+      navigate("/login");
+    } else {
+      console.error("Logout failed");
+    }
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setCurrentRole("patient");
-  };
-
-  const handleRoleChange = (role: string) => {
-    setCurrentRole(role);
-  };
+  
 
   return (
     <Routes>
       <Route path={"/login"} element={<Login />} />
+      <Route path={"/doc-signup"} element={<DocSignup />} />
+      <Route path={"/doc-login"} element={<DocLogin />} />
       <Route
         path={"/"}
         element={
+             <ProtectedRoute>
           <Home
-            currentRole={currentRole}
-            onRoleChange={handleRoleChange}
+            currentRole={user ? user?.userRole : "patient"}
+           
+            userName={user ? user?.userName : ""}
             onLogout={handleLogout}
-          />
+          /></ProtectedRoute>
         }
       />
       <Route path={"/callback"} element={<Callback />} />

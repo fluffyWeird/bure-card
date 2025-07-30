@@ -4,6 +4,7 @@ import { doctorOnly } from '../middleware/role.middleware';
 
 const router = express.Router();
 
+
 router.post('/patient',doctorOnly,  doctorController.createPatientHistory);
 router.post('/patient/:id/notes',doctorOnly,  doctorController.addNotesToPatient);
 router.post('/prescribe/medication',doctorOnly,  doctorController.prescribeMedication);

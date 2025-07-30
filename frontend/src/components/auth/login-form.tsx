@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { QrCode, CreditCard } from "lucide-react";
-import { RoleBadge } from "@/components/ui/role-badge";
 
 interface LoginFormProps {
   onLogin: (role: string) => void;
@@ -65,33 +64,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
             Scan QR Code (Patient)
           </Button>
           
-          <div className="space-y-3">
-            <Label className="text-sm font-medium text-foreground">Role Selection</Label>
-            <RadioGroup 
-              value={selectedRole} 
-              onValueChange={setSelectedRole}
-              className="space-y-2"
-            >
-              <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
-                <RadioGroupItem value="patient" id="patient" />
-                <Label htmlFor="patient" className="flex-1 cursor-pointer">
-                  <RoleBadge role="patient" />
-                </Label>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
-                <RadioGroupItem value="hospital_staff" id="hospital_staff" />
-                <Label htmlFor="hospital_staff" className="flex-1 cursor-pointer">
-                  <RoleBadge role="hospital_staff" />
-                </Label>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors">
-                <RadioGroupItem value="admin" id="admin" />
-                <Label htmlFor="admin" className="flex-1 cursor-pointer">
-                  <RoleBadge role="admin" />
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
+          
         </CardContent>
       </Card>
     </div>

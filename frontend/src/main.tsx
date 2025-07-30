@@ -5,23 +5,28 @@ import App from './App.tsx'
 import {
   BrowserRouter
 } from "react-router";
+import { Toaster } from "sonner"
 
-import AuthProvider from 'react-auth-kit';
-import createAuthStore from 'react-auth-kit/store/createAuthStore';
+import createStore from 'react-auth-kit/createStore'
+import { AuthProvider } from "../src/lib/AuthContext.tsx";
+interface IUserData {
+ name: string;
+ uuid: string;
+};
 
-const store = createAuthStore('cookie', {
-  authName: 'auth',
-  cookieDomain: 'localhost',
-  cookieSecure: false,
-  cookiePath: '/',
-  cookieSameSite: 'none',
-  debug: true,
-});
-
+const store = createStore<IUserData>({
+ authName:'_auth',
+ authType:'cookie',
+ cookieDomain: window.location.hostname,
+ cookieSecure: window.location.protocol === 'https:'
+})
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-   <AuthProvider store={store}>
+    
+   <AuthProvider >
+     <Toaster />
      <BrowserRouter>
+        
        <App />
      </BrowserRouter>
    </AuthProvider>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import axios from "axios";
 import * as jose from "jose";
 
@@ -39,7 +39,7 @@ const decodeUserInfoResponse = async (
 const Callback: React.FC = () => {
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const location = useLocation();
-
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchToken = async (code: string) => {
             try {
@@ -50,19 +50,14 @@ const Callback: React.FC = () => {
 
                 const { access_token } = response.data;
 
-                const userInfoResponse = await axios.post<{ data: string }>(
+             await axios.post<{ data: string }>(
                     "http://localhost:5000/api/userinfo/",
-                    { access_token }
+                    { access_token },{
+                        withCredentials: true
+                    }
                 );
 
-                const jwtToken =
-                    typeof userInfoResponse.data === "string"
-                        ? userInfoResponse.data
-                        : userInfoResponse.data.data;
-
-                const decodedUserInfo = await decodeUserInfoResponse(jwtToken);
-
-                setUserInfo(decodedUserInfo);
+               navigate("/");
             } catch (error) {
                 console.error("Error fetching token or user info:", error);
             }

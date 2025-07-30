@@ -13,15 +13,17 @@ import {
   Heart,
   Download,
   Clock,
-  User
+  User,
+  ClosedCaption
 } from "lucide-react";
 
 interface PatientRecordsProps {
   patientId: string;
   patientName: string;
+  onPressed: () => void;
 }
 
-export function PatientRecords({ patientId, patientName }: PatientRecordsProps) {
+export function PatientRecords({ patientId, patientName,onPressed }: PatientRecordsProps) {
   const [activeTab, setActiveTab] = useState("timeline");
 
   const patientInfo = {
@@ -136,7 +138,7 @@ export function PatientRecords({ patientId, patientName }: PatientRecordsProps) 
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container  fixed bg-zinc-400 h-screen overflow-scroll shadow-2xl shadow-zinc-700 rounded-3xl top-[100px] left-0 right-0 mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Patient Medical Records</h1>
@@ -145,6 +147,13 @@ export function PatientRecords({ patientId, patientName }: PatientRecordsProps) 
         <Button variant="outline">
           <Download className="w-4 h-4 mr-2" />
           Export Records
+        </Button>
+        <Button onClick={
+          onPressed
+
+        } variant="outline">
+         <ClosedCaption className="w-4 h-4 mr-2" />
+          close 
         </Button>
       </div>
 

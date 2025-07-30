@@ -20,8 +20,16 @@ import {
   Venus,
   BookText,
 } from "lucide-react";
+import { useState } from "react";
+import { PatientRecords } from "../medical/patient-records";
 
+type Patient = {
+  name: string
+  age: string
+  onPressed: () => void;
+}
 export function PatientDashboard() {
+  const [showFullRecords, setShowFullRecords] = useState<boolean>(false);
   const accessRequests = [
     {
       id: 1,
@@ -71,35 +79,6 @@ export function PatientDashboard() {
     },
   ];
 
-  const upcomingAppointments = [
-    {
-      id: 1,
-      doctor: "Dr. Hanna Bekele",
-      date: "2024-01-20",
-      time: "10:00 AM",
-      type: "Follow-up",
-    },
-    {
-      id: 2,
-      doctor: "Dr. Alemayehu Tadesse",
-      date: "2024-01-25",
-      time: "2:00 PM",
-      type: "Consultation",
-    },
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "bg-status-pending";
-      case "approved":
-        return "bg-status-approved";
-      case "rejected":
-        return "bg-status-rejected";
-      default:
-        return "bg-muted";
-    }
-  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -112,12 +91,24 @@ export function PatientDashboard() {
             Manage your health records and consent
           </p>
         </div>
-        <Button variant={"default"}>View Full</Button>
+        <Button onClick={
+          () => {
+            setShowFullRecords(true);
+          }
+        } variant={"default"}>View Full</Button>
       </div>
 
       <div className="grid grid-cols-3 lg:grid-cols-3 gap-4">
         {/* Access Requests */}
-
+{
+  showFullRecords && (
+    <PatientRecords patientId="992" patientName="nashit" onPressed={
+      () => {
+        setShowFullRecords(false);
+      }
+    } />
+  )
+}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
