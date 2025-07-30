@@ -13,9 +13,18 @@ interface DashboardProps {
   onLogout: () => void;
 }
 
-export default function Home({ currentRole, onRoleChange, onLogout }: DashboardProps) {
-  const [activeView, setActiveView] = useState<"dashboard" | "records" | "consent">("dashboard");
-  const [selectedPatient, setSelectedPatient] = useState<{id: string, name: string} | null>(null);
+export default function Home({
+  currentRole,
+  onRoleChange,
+  onLogout,
+}: DashboardProps) {
+  const [activeView, setActiveView] = useState<
+    "dashboard" | "records" | "consent"
+  >("dashboard");
+  const [selectedPatient, setSelectedPatient] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const [consentRequest, setConsentRequest] = useState<any>(null);
 
   // Demo consent request data
@@ -29,9 +38,9 @@ export default function Home({ currentRole, onRoleChange, onLogout }: DashboardP
       "Lab Results (Last 6 months)",
       "Vital Signs",
       "Allergies & Conditions",
-      "Vaccination Records"
+      "Vaccination Records",
     ],
-    urgency: "routine" as const
+    urgency: "routine" as const,
   };
 
   const handleViewRecords = (patientId: string, patientName: string) => {
@@ -59,7 +68,7 @@ export default function Home({ currentRole, onRoleChange, onLogout }: DashboardP
   const renderMainContent = () => {
     if (activeView === "records" && selectedPatient) {
       return (
-        <PatientRecords 
+        <PatientRecords
           patientId={selectedPatient.id}
           patientName={selectedPatient.name}
         />
@@ -97,16 +106,14 @@ export default function Home({ currentRole, onRoleChange, onLogout }: DashboardP
   }
 
   return (
-    <div className="min-h-screen bg-red-200">
-      <Header 
+    <div className="min-h-screen bg-white-200">
+      <Header
         currentRole={currentRole}
         onRoleChange={onRoleChange}
         onLogout={onLogout}
       />
-      
-      <main className="pb-6">
-        {renderMainContent()}
-      </main>
+
+      <main className="pb-6">{renderMainContent()}</main>
 
       {/* Demo Action Buttons */}
       <div className="fixed bottom-6 right-6 flex flex-col space-y-2">
@@ -118,7 +125,7 @@ export default function Home({ currentRole, onRoleChange, onLogout }: DashboardP
             Demo: Consent Flow
           </button>
         )}
-        
+
         {(currentRole === "doctor" || currentRole === "hospital_staff") && (
           <button
             onClick={() => handleViewRecords("FID001234", "Almaz Tesfaye")}

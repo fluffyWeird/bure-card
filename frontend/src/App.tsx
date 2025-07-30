@@ -1,13 +1,12 @@
-
-import { Route, Routes } from "react-router"
-import AuthOutlet from '@auth-kit/react-router/AuthOutlet'
-import Home from './Pages/Home'
-import Login from './Pages/Login'
+import { Route, Routes } from "react-router";
+import AuthOutlet from "@auth-kit/react-router/AuthOutlet";
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
 import { useState } from "react";
 import Callback from "./Pages/callback";
 
 function App() {
-   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentRole, setCurrentRole] = useState<string>("patient");
 
   const handleLogin = (role: string) => {
@@ -25,20 +24,21 @@ function App() {
   };
 
   return (
-  <Routes>
-    
-
-    <Route path={'/login' } element={<Login/>}/>
-    <Route element={<AuthOutlet fallbackPath='/login' />}><Route path={'/'} element={<Home  
-        currentRole={currentRole}
-        onRoleChange={handleRoleChange}
-        onLogout={handleLogout}
-      />}/>
-    </Route>
-
-    <Route path={'/callback'} element={<Callback/>}/>
-  </Routes>
-  )
+    <Routes>
+      <Route path={"/login"} element={<Login />} />
+      <Route
+        path={"/"}
+        element={
+          <Home
+            currentRole={currentRole}
+            onRoleChange={handleRoleChange}
+            onLogout={handleLogout}
+          />
+        }
+      />
+      <Route path={"/callback"} element={<Callback />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
