@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
 import axios from "axios";
-import { decodeJwt } from "jose";
+import jwt from 'jsonwebtoken'
+import { decodeJwt, jwtDecrypt } from "jose";
 import { getOIDCConfig } from "../utils/oidc";
+
+import { Users } from "../models/user.model";
+
 import { generateSignedJwt } from "../utils/jwtGenerator";
+
 
 export const exchangeCodeForToken = async (req: Request, res: Response) => {
   try {
@@ -49,7 +54,38 @@ console.log("Using OIDC Config:", { USERINFO_ENDPOINT });
     const userJwt = response.data;
     const decodedUser = decodeJwt(userJwt);
 
-    return res.json({ data: userJwt, decoded: decodedUser });
+    const faydaId = response.data
+
+    let user = await Users.findOne({faydaId})
+
+    if (!user){
+      user = new Users({
+        faydaId,
+        fullName: decodedUser.name,
+        email: decodedUser.email || null,
+        phone: decodedUser.phone_number || null,
+      })
+      await user.save()
+    }
+
+    const jwtToken = jwt.sign(
+      {
+        id: user._id,
+        faydaId: user.faydaId,
+        name: user.name,
+        role: user.role || "patient",
+      },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "1h" }
+    );
+
+      return res.json({
+        message: user ? "User logged in successfully" : "User registered successfully",
+        token: jwtToken,
+        user,
+    });
+
+
   } catch (error: any) {
     console.error("User info fetch error:", error.response?.data || error.message);
     res.status(500).json({ message: "Failed to fetch user info" });
