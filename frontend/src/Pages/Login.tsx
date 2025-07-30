@@ -62,6 +62,7 @@ const generateSignInUrl = () => {
            onClick={() => {
             console.log("Redirecting to OIDC login...");
             console.log("Generated SignIn URL:", generateSignInUrl());
+            window.location.href = generateSignInUrl();
              
            }}
               className="w-full h-12 gap-2 bg-foreground hover:bg-foreground/90 text-background"
