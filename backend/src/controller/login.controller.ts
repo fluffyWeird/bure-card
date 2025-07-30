@@ -6,34 +6,28 @@ import {signToken,verifyToken  } from '../utils/genToken'
 export const registerUser = async (req: Request, res: Response) =>{
     try {
         const user = await Staffs.findOne({email: req.body.email})
-
         if (user){
-            res.json({message: "User already exists !"}).status(401)
+            res.status(409).json({message: "user already exist"})
             return;
         }
 
         const hashedPass = await hashPassword(req.body.password);
-
-        let newUser = new Staffs({
+        let newUser = await Staffs.create({
             username: req.body.username,
             email: req.body.email,
             password: hashedPass
         })
 
-        await newUser.save()
-
         let accessToken = signToken(newUser.email, newUser.username);
-
-        res
-            .cookie('accessToken', accessToken,{httpOnly: true})
-
-        res.json({
+        res.cookie('accessToken', accessToken,{httpOnly: true})
+        res.status(201).json({ 
             username: newUser.username,
             email: newUser.email
         })
 
     } catch (error) {
-        res.json({message: "Error Registering the user !", Error: error})
+        res.status(500).json({ Error: (error as Error).message})
+        console.log(error)
         return;
     }
 }
@@ -43,38 +37,33 @@ export const loginUser = async (req: Request, res: Response) => {
         const user = await Staffs.findOne({email: req.body.email});
 
         if (!user){
-            res.json("User Don't Exist !").status(404)
+            res.status(404).json("user not found") 
             return;
         }
 
         const givenPassword = req.body.password
-
         const passwordVerification = await validatePassword(givenPassword, user.password)
 
         if (!passwordVerification){
-            res.json({message: "Invalid Username or Password !"}).status(400)
+            res.status(401).json({message: "invalid username or password"})
             return;
         }
-
         let token = signToken(user.email, user.username);
-        res.header('authorization', token)
-        res.json({message: "Login successful !"})
+        res.cookie('accessToken', token,{httpOnly:true})
+        res.status(200).json({message: "login okay"}) 
 
     } catch (error) {
-        res.json({message: "Error Login the user !", Error: error})
+        res.status(500).json({Error: (error as Error).message})
+        console.log(error)
         return;
     }
-
 }
+
 export const logoutUser = async (req: Request, res: Response) => {
     try {
-        res
-            .clearCookie('accessToken')
-            .json({message: "Log out successful !! "}).
-            status(200)
-            
+        res.clearCookie('accessToken').status(200).json({message: "logout okay"})           
     } catch (error) {
-        res.json(error)
+        res.status(500).json((error as Error).message)
         return;
     }
 }

@@ -19,13 +19,12 @@ const staffSchema = new mongoose.Schema<IStaff>({
     email:{
         type: String,
         unique: true,
-        requird: true
+        required: true
     },
     role:{
         type: String,
-        required: true,
-        default: 'doc' // doc,nurse,lab,pharma
+        default: 'doc'
     }
 })
 
-export const Staffs = mongoose.model('Staff',staffSchema)
+export const Staffs = mongoose.model<IStaff>('Staff',staffSchema)
