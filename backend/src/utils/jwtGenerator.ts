@@ -4,13 +4,13 @@ export const generateSignedJwt = async (): Promise<string> => {
   const {
     CLIENT_ID,
     TOKEN_ENDPOINT,
-    PRIVATE_KEY_BASE64
+    PRIVATE_KEY
   } = process.env;
 
-  if (!CLIENT_ID || !TOKEN_ENDPOINT || !PRIVATE_KEY_BASE64) {
+  if (!CLIENT_ID || !TOKEN_ENDPOINT || !PRIVATE_KEY) {
     throw new Error("Missing environment variables");
   }
-
+console.log(`Generating signed JWT with CLIENT_ID: ${CLIENT_ID}, TOKEN_ENDPOINT: ${TOKEN_ENDPOINT}`);
   const header = { alg: 'RS256', typ: 'JWT' };
 
   const payload = {
@@ -19,7 +19,7 @@ export const generateSignedJwt = async (): Promise<string> => {
     aud: TOKEN_ENDPOINT
   };
 
-  const jwkJson = Buffer.from(PRIVATE_KEY_BASE64, 'base64').toString();
+  const jwkJson = Buffer.from(PRIVATE_KEY, 'base64').toString();
   const jwk = JSON.parse(jwkJson);
   const privateKey = await importJWK(jwk, 'RS256');
 
