@@ -2,24 +2,30 @@ import { Request, Response } from "express";
 import axios from "axios";
 import { decodeJwt } from "jose";
 import { getOIDCConfig } from "../utils/oidc";
+import { generateSignedJwt } from "../utils/jwtGenerator";
 
 export const exchangeCodeForToken = async (req: Request, res: Response) => {
   try {
+    console.log("Exchanging code for token with body:", req.body);
     const { code } = req.body;
     const { TOKEN_ENDPOINT, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = getOIDCConfig();
-
-    const response = await axios.post(
+console.log("Using OIDC Config:", { TOKEN_ENDPOINT, CLIENT_ID, REDIRECT_URI });
+const jwt = await generateSignedJwt();    
+const response = await axios.post(
       TOKEN_ENDPOINT,
       new URLSearchParams({
+
         grant_type: "authorization_code",
         code,
         redirect_uri: REDIRECT_URI,
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
+        client_assertion: jwt,
+        
       }),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
-
+console.log("Token exchange response:", response.data);
     return res.json(response.data);
   } catch (error: any) {
     console.error("Token exchange error:", error.response?.data || error.message);
