@@ -23,11 +23,16 @@ import {
 import { useState } from "react";
 import { PatientRecords } from "../medical/patient-records";
 
-type Patient = {
-  name: string
-  age: string
-  onPressed: () => void;
-}
+
+type user = {
+  name: string;
+  age: string;
+  gender: string;
+  religion: string;
+  phone: string;
+  address: string;
+};
+import { useAuth } from "@/lib/AuthContext";
 export function PatientDashboard() {
   const [showFullRecords, setShowFullRecords] = useState<boolean>(false);
   const accessRequests = [
@@ -48,16 +53,7 @@ export function PatientDashboard() {
       date: "2024-01-14",
     },
   ];
-  const sampleUser = [
-    {
-      name: "Jhonny Doey",
-      age: "32",
-      gender: "Male",
-      religion: "Christian",
-      phone: "+251911111",
-      address: "St.Rufael",
-    },
-  ];
+
   const recentActivity = [
     {
       id: 1,
@@ -79,7 +75,7 @@ export function PatientDashboard() {
     },
   ];
 
-
+const {user} =useAuth()
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -120,9 +116,9 @@ export function PatientDashboard() {
           ;
           <CardContent>
             <div className="space-y-4">
-              {sampleUser.map((user) => (
+             
                 <div
-                  key={user.name}
+                  key={user?.userName}
                   className="p-4 border border-border rounded-xl shadow-sm"
                 >
                   <div className="flex flex-wrap gap-4">
@@ -134,7 +130,7 @@ export function PatientDashboard() {
                       </div>
                       <input
                         disabled
-                        value={user.name}
+                        value={user?.userName}
                         className="bg-muted/30 rounded-md p-2 text-sm"
                       />
                     </div>
@@ -149,7 +145,7 @@ export function PatientDashboard() {
                         </div>
                         <input
                           disabled
-                          value={user.age}
+                          value={user?.userName}
                           className="bg-muted/30 rounded-md p-2 text-sm"
                         />
                       </div>
@@ -162,7 +158,7 @@ export function PatientDashboard() {
                         </div>
                         <input
                           disabled
-                          value={user.gender}
+                          value={user?.userName}
                           className="bg-muted/30 rounded-md p-2 text-sm"
                         />
                       </div>
@@ -176,7 +172,7 @@ export function PatientDashboard() {
                       </div>
                       <input
                         disabled
-                        value={user.religion}
+                        value={user?.userName}
                         className="bg-muted/30 rounded-md p-2 text-sm"
                       />
                     </div>
@@ -189,7 +185,7 @@ export function PatientDashboard() {
                       </div>
                       <input
                         disabled
-                        value={user.phone}
+                        value={user?.userName}
                         className="bg-muted/30 rounded-md p-2 text-sm"
                       />
                     </div>
@@ -202,13 +198,13 @@ export function PatientDashboard() {
                       </div>
                       <input
                         disabled
-                        value={user.address}
+                        value={user?.userName}
                         className="bg-muted/30 rounded-md p-2 text-sm"
                       />
                     </div>
                   </div>
                 </div>
-              ))}
+             
             </div>
           </CardContent>
         </Card>
