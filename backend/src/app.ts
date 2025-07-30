@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use('/api/auth', authRoute);
+app.use('/api', authRoute);
 app.use('/api/staff', staffRoute);
 app.use('/api/docs',doctorRoute)
 

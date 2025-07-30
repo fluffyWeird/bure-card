@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import { login, callback } from '../controller/auth.controller';
+import express from "express";
+import { exchangeCodeForToken, fetchUserInfo } from "../controller/auth.controller";
 
-const router = Router();
+const router = express.Router();
 
-router.get('/login', login);
-router.get('/callback', callback);
+router.post("/token", exchangeCodeForToken);
+router.post("/userinfo", fetchUserInfo);
 
 export default router;
