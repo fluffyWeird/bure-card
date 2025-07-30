@@ -16,7 +16,7 @@ const prescriptionSchema = new Schema<PrescriptionDocument>(
     doctor: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
     medication: { type: String, required: true },
     dosage: { type: String, required: true },
-    frequency: { type: String, required: true },
+    frequency: { type: String },
     notes: { type: String },
     date: { type: Date, default: Date.now },
   },
