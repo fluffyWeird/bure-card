@@ -1,9 +1,9 @@
 const OIDC_CONFIG = {
   CLIENT_ID: "bure-card-client",
   REDIRECT_URI: "http://localhost:3000/callback",
-  AUTHORIZATION_ENDPOINT: "http://localhost:8080/authorize",
-  TOKEN_ENDPOINT: "http://localhost:5000/api/token",
-  USERINFO_ENDPOINT: "http://localhost:5000/api/userinfo",
+  AUTHORIZATION_ENDPOINT: "http://localhost:8080/authorize", // Your Fayda auth URL
+  TOKEN_ENDPOINT: "http://localhost:5000/api/token", // Your backend
+  USERINFO_ENDPOINT: "http://localhost:5000/api/userinfo", // Your backend
   RESPONSE_TYPE: "code",
   SCOPE: "openid profile email",
   ACR_VALUES: "mosip:idp:acr:generated-code mosip:idp:acr:linked-wallet mosip:idp:acr:biometrics",

@@ -4,9 +4,15 @@ dotenv.config()
 
 export async function connectdb(){
     try {
-        await mongoose.connect(process.env.MONGO_URI!)
-        console.log('db connection successful')
+        const mongoUri = process.env.MONGO_URI;
+        if (!mongoUri) {
+            console.log('MONGO_URI not set, skipping database connection');
+            return;
+        }
+        await mongoose.connect(mongoUri);
+        console.log('db connection successful');
     } catch (error) {
-        console.log(error)
+        console.log('Database connection error:', error);
+        console.log('Continuing without database connection...');
     }
 }
