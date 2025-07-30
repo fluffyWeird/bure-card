@@ -1,26 +1,17 @@
 import axios from 'axios';
-import jwt from 'jsonwebtoken';
 import qs from 'querystring';
 import { v4 as uuidv4 } from 'uuid';
 import crypto from 'crypto';
+import { generateSignedJwt } from '../utils/jwtGenerator'
 
-export const generateCodeVerifier = () => crypto.randomBytes(32).toString('hex');
+export const generateCodeVerifier = (): string => 
+  crypto.randomBytes(32).toString('hex');
 
-export const generateCodeChallenge = (verifier: string) =>
+export const generateCodeChallenge = (verifier: string): string =>
   crypto.createHash('sha256').update(verifier).digest('base64url');
 
 export const getToken = async (code: string, codeVerifier: string) => {
-  const clientAssertion = jwt.sign(
-    {
-      iss: process.env.CLIENT_ID,
-      sub: process.env.CLIENT_ID,
-      aud: process.env.ESIGNET_TOKEN_URL,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 300,
-    },
-    process.env.PRIVATE_KEY as string,
-    { algorithm: 'RS256' }
-  );
+  const clientAssertion = await generateSignedJwt();
 
   const response = await axios.post(
     process.env.ESIGNET_TOKEN_URL as string,
@@ -43,5 +34,5 @@ export const getUserInfo = async (accessToken: string) => {
   const res = await axios.get(process.env.ESIGNET_USERINFO_URL as string, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  return jwt.decode(res.data) as Record<string, any>;
+  return res.data as Record<string, any>;
 };
