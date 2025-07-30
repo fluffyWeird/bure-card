@@ -159,7 +159,9 @@ README.md             # Project documentation
 
 ## 🤝 Contributors
 
-- **Project Lead:** fluffyWeird
+- Eyuel Kebede - Eyuduc@gmail.com
+- Andualem Getachew
+- Eureka T/Mariam 
 - **Design & Research:** [Figma link](#) _(replace with actual link)_
 
 ## Note on Commit Authorship
