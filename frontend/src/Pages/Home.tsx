@@ -13,21 +13,11 @@ interface DashboardProps {
   onLogout: () => void;
 }
 
-export default function Home({
-  currentRole,
-  onRoleChange,
-  onLogout,
-}: DashboardProps) {
-  const [activeView, setActiveView] = useState<
-    "dashboard" | "records" | "consent"
-  >("dashboard");
-  const [selectedPatient, setSelectedPatient] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
+export default function Home({ currentRole, onRoleChange, onLogout }: DashboardProps) {
+  const [activeView, setActiveView] = useState<"dashboard" | "records" | "consent">("dashboard");
+  const [selectedPatient, setSelectedPatient] = useState<{ id: string; name: string } | null>(null);
   const [consentRequest, setConsentRequest] = useState<any>(null);
 
-  // Demo consent request data
   const demoConsentRequest = {
     doctorName: "Dr. Alemayehu Tadesse",
     hospital: "Addis Ababa Medical Center",
@@ -67,12 +57,7 @@ export default function Home({
 
   const renderMainContent = () => {
     if (activeView === "records" && selectedPatient) {
-      return (
-        <PatientRecords
-          patientId={selectedPatient.id}
-          patientName={selectedPatient.name}
-        />
-      );
+      return <PatientRecords patientId={selectedPatient.id} patientName={selectedPatient.name} />;
     }
 
     if (activeView === "consent" && consentRequest) {
@@ -85,7 +70,6 @@ export default function Home({
       );
     }
 
-    // Dashboard view
     switch (currentRole) {
       case "patient":
         return <PatientDashboard />;
@@ -100,22 +84,14 @@ export default function Home({
     }
   };
 
-  // Don't show header for consent flow (it's full-screen)
   if (activeView === "consent") {
     return renderMainContent();
   }
 
   return (
     <div className="min-h-screen bg-white-200">
-      <Header
-        currentRole={currentRole}
-        onRoleChange={onRoleChange}
-        onLogout={onLogout}
-      />
-
+      <Header currentRole={currentRole} onRoleChange={onRoleChange} onLogout={onLogout} />
       <main className="pb-6">{renderMainContent()}</main>
-
-      {/* Demo Action Buttons */}
       <div className="fixed bottom-6 right-6 flex flex-col space-y-2">
         {currentRole === "patient" && (
           <button
@@ -125,7 +101,6 @@ export default function Home({
             Demo: Consent Flow
           </button>
         )}
-
         {(currentRole === "doctor" || currentRole === "hospital_staff") && (
           <button
             onClick={() => handleViewRecords("FID001234", "Almaz Tesfaye")}
