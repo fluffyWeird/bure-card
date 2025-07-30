@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/genToken"; 
 
-export const checkDoctorRole = (req: Request, res: Response, next: NextFunction) => {
+export const doctorOnly = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.accessToken;
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token provided" });
