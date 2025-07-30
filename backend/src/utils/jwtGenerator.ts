@@ -29,3 +29,6 @@ export const generateSignedJwt = async (): Promise<string> => {
     .setExpirationTime('2h')
     .sign(privateKey);
 };
+
+
+
