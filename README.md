@@ -6,8 +6,8 @@
 - **Andualem Getachew**
 - **Eureka T/Mariam**
 
-#### NB- GELILA AMSALU ISN'T A COLLABORATOR ALTHOUGH SHE IS PRESENT ON THE COLABORATOR SECTION. [didn't signout of vscode that's how it happend]
-
+#### NB- GELILA AMSALU ISN'T A COLLABORATOR. [didn't signout of vscode that's how it happend]
+#### Assumption - MOH is a credential partner and our project is to be implemented from singIn Phase. This is done because it takes more time to register and is redendant.
 ---
 
 ## 📘 Project Synopsis
