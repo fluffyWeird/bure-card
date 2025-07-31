@@ -1,10 +1,26 @@
-import type { an } from "node_modules/react-router/dist/development/route-data-CqEmXQub.d.mts";
-import React, { createContext, useContext, useState} from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+interface Address {
+  zone: string;
+  woreda: string;
+  region: string;
+}
 
 interface User {
-  userName: string;
+  _id?: string;
+  faydaId: string;
+  sub: string;
+  name: string;
   email: string;
-  userRole: string; // e.g., "patient", "doctor", etc.
+  picture?: string;
+  gender?: string;
+  address?: Address;
+  role: string;
 }
 
 interface AuthContextType {
@@ -14,8 +30,21 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: any }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(() => {
+    // Load user from localStorage on initial load
+    const storedUser = localStorage.getItem("authUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  // Save to localStorage whenever user changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("authUser", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("authUser");
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>

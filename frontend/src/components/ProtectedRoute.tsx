@@ -1,20 +1,28 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Navigate } from "react-router";
 import axios from "axios";
 import { useAuth } from "../lib/AuthContext";
 
 interface ProtectedRouteProps {
   children: any;
+  currentRole: UserRole;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+type UserRole = "patient" | "doc";
+const ProtectedRoute = ({ children , currentRole }: ProtectedRouteProps) => {
   const { user, setUser } = useAuth();
   const [loading, setLoading] = useState(true);
-
+  const paths= {
+    patient: "http://localhost:5000/api/me",
+    doc: "http://localhost:5000/api/staff/me",
+  }
+console.log("Current user role:", currentRole);
   useEffect(() => {
-    axios.get("http://localhost:5000/api/staff/me", { withCredentials: true })
+    axios.get(paths[(user?.role as UserRole) || currentRole], { withCredentials: true })
       .then((res) => {
-        setUser(res.data.user); // assume API returns { user: {...} }
+
+        console.log("User data fetched:", res.data);
+        setUser(res.data);
         setLoading(false);
       })
       .catch(() => {

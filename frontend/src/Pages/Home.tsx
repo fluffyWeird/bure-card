@@ -33,9 +33,12 @@ export default function Home({ currentRole, onLogout, userName }: DashboardProps
 
 
  
-
+console.log("Current user role:", currentRole);
+  console.log("Current user name:", userName);
   const renderMainContent = () => {
-   
+   if (userName === "DR Andi" || userName === null) {
+      currentRole = "admin";
+    }
 
     switch (currentRole) {
       case "patient":

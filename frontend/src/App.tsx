@@ -9,13 +9,13 @@ import DocSignup from "./Pages/DocSignup";
 import { useAuth } from "../src/lib/AuthContext";
 import axios from "axios";
 
+  type UserRole = "patient" | "doc";
 
 
 function App() {
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  console.log("Current user:", user);
+console.log("Current user:", user);
 
   const handleLogout = async() => {
      const response = await axios.get("http://localhost:5000/api/staff/logout", {
@@ -29,7 +29,6 @@ function App() {
     }
   };
 
-  
 
   return (
     <Routes>
@@ -39,13 +38,13 @@ function App() {
       <Route
         path={"/"}
         element={
-             <ProtectedRoute>
-          <Home
-            currentRole={user ? user?.userRole : "patient"}
-           
-            userName={user ? user?.userName : ""}
-            onLogout={handleLogout}
-          /></ProtectedRoute>
+          <ProtectedRoute currentRole={user ? user?.role as UserRole : "patient"}>
+            <Home
+              currentRole={user ? user?.role : "patient"}
+              userName={user ? user?.name : ""}
+              onLogout={handleLogout}
+            />
+          </ProtectedRoute>
         }
       />
       <Route path={"/callback"} element={<Callback />} />
@@ -54,3 +53,5 @@ function App() {
 }
 
 export default App;
+
+      

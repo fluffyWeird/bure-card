@@ -42,6 +42,20 @@ console.log("Token exchange response:", response.data);
   }
 };
 
+    interface DecodedUser {
+      sub: string;
+    
+      name?: string;
+      picture?: string;
+      gender?: string;
+      address?: {
+        zone?: string;
+        woreda?: string;
+        region?: string;
+      };
+      email?: string;
+      phone_number?: string;
+    }
 export const fetchUserInfo = async (req: Request, res: Response) => {
   try {
     const { access_token } = req.body;
@@ -54,8 +68,9 @@ console.log("Using OIDC Config:", { USERINFO_ENDPOINT });
 
     const userJwt = response.data;
 
-    const decodedUser = decodeJwt(userJwt);
-        console.log("Decoded user info:", decodedUser);
+
+    const decodedUser = decodeJwt(userJwt) as DecodedUser;
+    console.log("Decoded user info:", decodedUser);
 
     const faydaId = decodedUser.phone_number ;
 
@@ -66,6 +81,13 @@ console.log("Using OIDC Config:", { USERINFO_ENDPOINT });
         sub: decodedUser.sub,
         faydaId,
         name: decodedUser.name,
+        picture: decodedUser.picture || null,
+        gender: decodedUser.gender || null,
+        address: {
+          zone: decodedUser.address?.zone || null,
+          woreda: decodedUser.address?.woreda || null,
+          region: decodedUser.address?.region || null
+        },
         email: decodedUser.email || null,
         phone: decodedUser.phone_number || null,
         role:  "patient",
@@ -100,4 +122,27 @@ console.log("Using OIDC Config:", { USERINFO_ENDPOINT });
     res.status(500).json({ message: "Failed to fetch user info" });
   }
 };
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    const { accessToken } = req.cookies;
+    if (!accessToken) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const decoded = jwt.verify(accessToken, process.env.access_Token as string) as any;
+    console.log("Decoded JWT:", decoded);
+    const user = await Users.findOne({ _id: decoded.id }).select("-__v -createdAt -updatedAt");
+    console.log("Fetched user:", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 

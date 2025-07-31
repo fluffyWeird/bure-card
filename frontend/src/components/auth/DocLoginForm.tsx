@@ -12,6 +12,7 @@ import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { Eye, EyeOff, Users, Loader2 } from "lucide-react";
 import { Navigate, redirect, useNavigate } from "react-router";
 import { ca } from "zod/v4/locales";
+import { useAuth } from "@/lib/AuthContext";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -25,6 +26,7 @@ const DocLoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
    const navigate = useNavigate();
+   const { setUser } = useAuth();
 
 
   const form = useForm<FormData>({
@@ -41,7 +43,9 @@ const DocLoginForm = () => {
     const response = await axios.post("http://localhost:5000/api/staff/login", data, {
   withCredentials: true,
 });
-console.log("Login response:", response.data);
+      
+      setUser(response.data);
+      toast("Login successful!");
 
 navigate("/");
       

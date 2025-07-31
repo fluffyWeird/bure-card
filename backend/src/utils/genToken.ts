@@ -2,11 +2,12 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config()
 
-export function signToken(email: string, username: string, role='doc'): string{
+export function signToken(email: string, username: string, role='doc', id: string): string{
     const payload = {
         userEmail: email,
         userName: username,
-        userRole: role
+        role: role,
+        id: id
     }
 
     const token = jwt.sign(payload,process.env.access_Token!)

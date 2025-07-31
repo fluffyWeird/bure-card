@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 import { Eye, EyeOff, Users, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const formSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -22,7 +23,7 @@ type FormData = z.infer<typeof formSchema>;
 const DocSignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+const navigate = useNavigate();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -37,14 +38,13 @@ const DocSignupForm = () => {
     setIsLoading(true);
     try {
       const response = await axios.post("http://localhost:5000/api/staff/register", data);
-      
-        toast("Registration successful! Please log in.");
-      
+      toast("Registration successful! Please log in.");
+      navigate("/doc-login");
       form.reset();
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
-      
-      toast("ss");
+
+      toast(errorMessage);
     } finally {
       setIsLoading(false);
     }
